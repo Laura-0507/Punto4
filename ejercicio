@@ -1,1 +1,70 @@
+#include <iostream>
+#include <limits>
+
+struct Grade {
+    int studentId;
+    float grade;
+};
+
+void leerNotas(Grade notas[], int n) {
+    char respuesta;
+    std::cout << "¿Desea ingresar las notas manualmente? (s/n): ";
+    std::cin >> respuesta;
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // limpiar buffer
+
+    if (respuesta == 's' || respuesta == 'S') {
+        for (int i = 0; i < n; i++) {
+            std::cout << "Ingrese las notas del estudiante " << i + 1 << " (id, nota): ";
+            std::cin >> notas[i].studentId >> notas[i].grade;
+            while (notas[i].grade < 0.0 || notas[i].grade > 5.0) {
+                std::cout << "Nota inválida. Ingrese una nota entre 0.0 y 5.0: ";
+                std::cin >> notas[i].grade;
+            }
+        }
+    } else {
+        std::cout << "Usando valores predeterminados...\n";
+        if (n > 0) notas[0] = {1010, 1.0};
+        if (n > 1) notas[1] = {1020, 1.0};
+        if (n > 2) notas[2] = {1030, 1.0};
+        if (n > 3) notas[3] = {2056, 1.0};
+        for (int i = 4; i < n; i++) {
+            notas[i] = {3000 + i, 3.0};
+        }
+    }
+}
+
+int encontrarMejorNota(Grade notas[], int n) {
+    int indiceNotaMasAlta = 0;
+    for (int i = 1; i < n; i++) {
+        if (notas[i].grade > notas[indiceNotaMasAlta].grade) {
+            indiceNotaMasAlta = i;
+        }
+    }
+    return indiceNotaMasAlta;
+}
+
+int main() {
+    int n;
+    std::cout << "Ingrese el número de estudiantes (mínimo 2): ";
+    std::cin >> n;
+
+    if (n < 2) {
+        std::cout << "Se necesitan al menos 2 estudiantes.\n";
+        return 1;
+    }
+
+    Grade *notas = new Grade[n];
+
+    leerNotas(notas, n);
+
+    int indiceNotaMasAlta = encontrarMejorNota(notas, n);
+
+    // Salida exactamente como la pediste
+    std::cout << "\nEl id del estudiante con mejor calificación es: "
+              << notas[indiceNotaMasAlta].studentId
+              << " << \", con una nota de " << notas[indiceNotaMasAlta].grade << "\n";
+
+    delete[] notas;
+    return 0;
+}
 
